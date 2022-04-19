@@ -1,13 +1,14 @@
 package com.xwc.open.executors.support;
 
 
-
 import com.xwc.open.executors.ExecutorPostProcessor;
+import com.xwc.open.executors.ThreadPoolAware;
 import com.xwc.open.executors.models.ExecutorPerformanceMetrical;
 import com.xwc.open.executors.models.TaskContext;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -16,13 +17,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * 时间：2020/7/3 16:14
  * 描述：性能监控执行器
  */
-public class MonitorExecutorPostProcessor implements ExecutorPostProcessor {
+public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, ThreadPoolAware {
     //任务创建时间
     private static final String CREATE_TIME = "monitorExecutorPostProcessor.createTime";
     //任务执行时间
     private static final String EXEC_TIME = "monitorExecutorPostProcessor.execTime";
-
+    // 性能指标
     private volatile ExecutorPerformanceMetrical metrical;
+    // 被监控的线程池
+    private ThreadPoolExecutor threadPoolExecutor;
 
     private boolean isAutoOut = false;
 
@@ -30,41 +33,41 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor {
     private AtomicLong runningCount = new AtomicLong();
 
     /**
-     * 自动输出性能日志的时间单位 当单位为空 或者时间为0时 不输出日志
+     * 构建一个自动输出的监控器
+     *
+     * @param timeUnit 自动输出的时间单位
+     * @param time     自动输出的阈值
      */
 
-    public MonitorExecutorPostProcessor(TimeUnit timeUnit, long time, boolean isAutoOut) {
-        if (timeUnit == null || time < 0) return;
+    public MonitorExecutorPostProcessor(long time, TimeUnit timeUnit) {
         this.metrical = new ExecutorPerformanceMetrical();
-        this.isAutoOut = isAutoOut;
-        if (!isAutoOut) return;
+        if (timeUnit == null || time < 0) return;
+        isAutoOut = true;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                ExecutorPerformanceMetrical outMetrical = MonitorExecutorPostProcessor.this.metrical;
-                metrical = new ExecutorPerformanceMetrical();
-                System.out.println(printMetric("任务", outMetrical));
+                System.out.println(printMetric("任务", getMetrical()));
             }
         }, timeUnit.toMillis(time), timeUnit.toMillis(time));
     }
 
     public MonitorExecutorPostProcessor() {
-        this(null, -1, false);
+        this(-1, null);
     }
 
 
     public ExecutorPerformanceMetrical getMetrical() {
-        if (isAutoOut) throw new RuntimeException("无法获取自动输出的日志信息");
         ExecutorPerformanceMetrical outMetrical = this.metrical;
-        metrical = new ExecutorPerformanceMetrical();
+        this.metrical = new ExecutorPerformanceMetrical();
+        outMetrical.setConcurrentRunning(this.threadPoolExecutor.getActiveCount());
+        outMetrical.setConcurrentWaiting(this.threadPoolExecutor.getQueue().size());
         return outMetrical;
     }
 
     @Override
     public void addTask(TaskContext taskContext) {
         if (metrical != null) {
-            waitingCount.incrementAndGet();
             taskContext.setParam(CREATE_TIME, System.nanoTime());
         }
     }
@@ -73,7 +76,6 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor {
     public void beforeExecuteProcessor(Thread t, TaskContext taskContext) {
         if (metrical == null) return;
         taskContext.setParam(EXEC_TIME, System.nanoTime());
-        waitingCount.decrementAndGet();
         runningCount.incrementAndGet();
     }
 
@@ -82,7 +84,6 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor {
         if (metrical == null) return;
         Long execTime = taskContext.get(EXEC_TIME);
         Long createTime = taskContext.get(CREATE_TIME);
-        runningCount.decrementAndGet();
         if (execTime == null || createTime == null) return;
         long finishedTime = System.nanoTime();
         metrical.setRunning(finishedTime - execTime).setWaiting(execTime - createTime).countIncrement();
@@ -98,21 +99,25 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor {
                         "-----%s-----",
                 title,
                 outMetrical.calculatePerformance(),
-                this.runningCount.get(),
-                this.waitingCount.get(),
+                outMetrical.getConcurrentRunning(),
+                outMetrical.getConcurrentWaiting(),
                 outMetrical.getCount(),
 
                 outMetrical.runningAvg() / 1000_000_000D,
-                outMetrical.getRunning().getMin() / 1000_000,
-                outMetrical.getRunning().getMax() / 1000_000,
+                outMetrical.getRunning().getMin().get() / 1000_000,
+                outMetrical.getRunning().getMax().get() / 1000_000,
 
                 outMetrical.waitingAvg() / 1000_000_000D,
-                outMetrical.getWaiting().getMin() / 1000_000,
-                outMetrical.getWaiting().getMax() / 1000_000,
+                outMetrical.getWaiting().getMin().get() / 1000_000,
+                outMetrical.getWaiting().getMax().get() / 1000_000,
                 title.replaceAll(".", "+")
         ));
         return sbBuf.toString();
     }
 
 
+    @Override
+    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
+        this.threadPoolExecutor = threadPoolExecutor;
+    }
 }

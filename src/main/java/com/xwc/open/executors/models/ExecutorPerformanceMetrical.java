@@ -15,7 +15,12 @@ public class ExecutorPerformanceMetrical {
     /**
      * 记录的开始时间
      */
-    private long initTime = System.nanoTime();
+    private long startTime = System.nanoTime();
+    /**
+     * 记录结束的时间
+     */
+    private long endTime = System.nanoTime();
+
     /**
      * 任务等待的相关指标
      */
@@ -24,6 +29,16 @@ public class ExecutorPerformanceMetrical {
      * 任务执行的相关指标
      */
     private PerformanceMetrical running = new PerformanceMetrical();
+
+    /**
+     * 当前线程并行的任务数量
+     */
+    private int concurrentRunning;
+
+    /**
+     * 当前线程等待的任务数量
+     */
+    private int concurrentWaiting;
 
     public ExecutorPerformanceMetrical setWaiting(long waitingTime) {
         waiting.set(waitingTime);
@@ -54,12 +69,56 @@ public class ExecutorPerformanceMetrical {
 
     public long waitingAvg() {
         if (count.get() == 0) return 0;
-        return waiting.getSum() / count.get();
+        return waiting.getSum().get() / count.get();
     }
 
     public long runningAvg() {
         if (count.get() == 0) return 0;
-        return running.getSum() / count.get();
+        return running.getSum().get() / count.get();
+    }
+
+    public int getConcurrentRunning() {
+        return concurrentRunning;
+    }
+
+    public int getConcurrentWaiting() {
+        return concurrentWaiting;
+    }
+
+    public void setCount(AtomicInteger count) {
+        this.count = count;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setWaiting(PerformanceMetrical waiting) {
+        this.waiting = waiting;
+    }
+
+    public void setRunning(PerformanceMetrical running) {
+        this.running = running;
+    }
+
+    public void setConcurrentRunning(int concurrentRunning) {
+        this.concurrentRunning = concurrentRunning;
+    }
+
+    public void setConcurrentWaiting(int concurrentWaiting) {
+        this.concurrentWaiting = concurrentWaiting;
     }
 
     /**
@@ -69,6 +128,6 @@ public class ExecutorPerformanceMetrical {
      */
     public double calculatePerformance() {
         if (count.get() == 0) return 0D;
-        return count.get() * 1000_000_000L * 1D / (System.nanoTime() - initTime);
+        return count.get() * 1000_000_000L * 1D / ((this.endTime = System.nanoTime()) - startTime);
     }
 }

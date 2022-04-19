@@ -1,5 +1,7 @@
 package com.xwc.open.executors.models;
 
+import lombok.Data;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -7,6 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * 时间：2020/7/3 20:17
  * 描述：
  */
+
+@Data
 public class PerformanceMetrical {
     /**
      * 记录任务最小的时间
@@ -23,24 +27,12 @@ public class PerformanceMetrical {
 
     public void set(long time) {
         long expect;
-        while ((expect = min.get()) > time || expect == 0L) {
+        while ((expect = min.get()) > time || (expect == 0 && time > 0)) {
             min.compareAndSet(expect, time);
         }
         while ((expect = max.get()) < time) {
             max.compareAndSet(expect, time);
         }
         sum.addAndGet(time);
-    }
-
-    public long getMin() {
-        return min.get();
-    }
-
-    public long getMax() {
-        return max.get();
-    }
-
-    public long getSum() {
-        return sum.get();
     }
 }

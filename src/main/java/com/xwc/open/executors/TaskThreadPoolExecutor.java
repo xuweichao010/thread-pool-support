@@ -64,6 +64,9 @@ public class TaskThreadPoolExecutor extends ThreadPoolExecutor {
     public void addExecutorPostProcessor(ExecutorPostProcessor postProcessor) {
         if (postProcessor == null) throw new NullPointerException();
         executorPostProcessorList.add(postProcessor);
+        if (postProcessor instanceof ThreadPoolAware) {
+            ((ThreadPoolAware) postProcessor).setThreadPoolExecutor(this);
+        }
     }
 
 
