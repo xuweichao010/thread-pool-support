@@ -21,6 +21,7 @@ public abstract class RejectedExecutionHandlerProxy implements RejectedExecution
                 doRejectedExecution(r, executor);
             } catch (Throwable e) {
                 throwable = e;
+                throw e;
             } finally {
                 taskThreadPoolExecutor.afterExecute(r, throwable);
             }
