@@ -2,6 +2,7 @@ package com.xwc.open.executors;
 
 
 import com.xwc.open.executors.models.TaskContext;
+import com.xwc.open.executors.support.CommonRejectedExecutionHandlerProxy;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -14,22 +15,27 @@ import java.util.concurrent.*;
 public class TaskThreadPoolExecutor extends ThreadPoolExecutor {
     private final List<ExecutorPostProcessor> executorPostProcessorList = new CopyOnWriteArrayList<>();
 
+    private static final RejectedExecutionHandler defaultHandler = new AbortPolicy();
+
 
     public TaskThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(),
+                defaultHandler);
     }
 
     public TaskThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, defaultHandler);
     }
 
     public TaskThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+                Executors.defaultThreadFactory(), handler);
     }
 
     public TaskThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, new CommonRejectedExecutionHandlerProxy(handler));
     }
+
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
@@ -69,6 +75,9 @@ public class TaskThreadPoolExecutor extends ThreadPoolExecutor {
         }
     }
 
+    public List<ExecutorPostProcessor> getExecutorPostProcessorList() {
+        return executorPostProcessorList;
+    }
 
     public void execute(Runnable command) {
         if (command == null) throw new NullPointerException();
