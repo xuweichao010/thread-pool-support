@@ -16,8 +16,16 @@ public abstract class RejectedExecutionHandlerProxy implements RejectedExecution
         if (executor instanceof TaskThreadPoolExecutor) {
             TaskThreadPoolExecutor taskThreadPoolExecutor = (TaskThreadPoolExecutor) executor;
             taskThreadPoolExecutor.beforeExecute(Thread.currentThread(), r);
-            doRejectedExecution(r, executor);
-            taskThreadPoolExecutor.afterExecute(r, null);
+            Throwable throwable = null;
+            try {
+                doRejectedExecution(r, executor);
+            } catch (Throwable e) {
+                throwable = e;
+            } finally {
+                taskThreadPoolExecutor.afterExecute(r, throwable);
+            }
+
+
         }
     }
 

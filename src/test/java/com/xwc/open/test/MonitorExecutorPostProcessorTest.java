@@ -49,7 +49,7 @@ public class MonitorExecutorPostProcessorTest {
         }
 
         try {
-            TimeUnit.SECONDS.sleep(100);
+            TimeUnit.SECONDS.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
