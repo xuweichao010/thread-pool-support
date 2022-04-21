@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <dependencies>
@@ -26,5 +27,48 @@
             <version>1.18.22</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>my-maven</id>
+            <url>http://124.221.168.155:8081/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy></checksumPolicy>
+            </snapshots>
+
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>my-maven-snapshots</id>
+            <url>http://124.221.168.155:8081/repository/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>my-maven-release</id>
+            <url>http://124.221.168.155:8081/repository/release/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

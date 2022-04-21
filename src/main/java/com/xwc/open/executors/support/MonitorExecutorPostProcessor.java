@@ -15,7 +15,12 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * 作者：徐卫超
  * 时间：2020/7/3 16:14
- * 描述：性能监控执行器
+ * 描述：用于监控线程池的运行时间信息，并统计这些信息的：
+ * -----任务-----
+ * Perf: 307.10 Hz | Running: 20 | Waiting: 93 | Finished: 619
+ * Running avg: 0.055s | min:  29ms | max:  80ms
+ * Waiting avg: 0.216s | min:   0ms | max: 317ms
+ * -----++-----
  */
 public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, ThreadPoolAware {
     //任务创建时间

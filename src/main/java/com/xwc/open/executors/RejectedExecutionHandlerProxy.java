@@ -4,7 +4,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * 类描述：
+ * 类描述：TaskThreadPoolExecutor的任务拒绝策略抽象实现
  * 作者：徐卫超 (cc)
  * 时间 2022/4/20 9:45
  */

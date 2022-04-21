@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * 作者：徐卫超
  * 时间：2020/7/3 20:17
- * 描述：
+ * 描述：统计类 主要提供给 ExecutorPerformanceMetrical使用
  */
 
 @Data

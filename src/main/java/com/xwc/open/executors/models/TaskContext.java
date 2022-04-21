@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * 作者：徐卫超
  * 时间：2020/7/3 15:35
- * 描述：
+ * 描述：线程上下文的信心，提供给ExecutorPostProcessor接口在线程的不通执行周期存储所需要的环境信息
  */
 public class TaskContext implements Runnable {
 

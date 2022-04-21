@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 作者：徐卫超
  * 时间：2020/7/3 20:40
- * 描述：线程池性能对象
+ * 描述：线程池性能对象主要提供给 MonitorExecutorPostProcessor使用
  */
 public class ExecutorPerformanceMetrical {
     /**
