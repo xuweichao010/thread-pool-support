@@ -135,6 +135,6 @@ public class ExecutorPerformanceMetrical {
      * 返回任务监控的时间
      */
     public long timeDuration() {
-        return (this.endTime = System.nanoTime()) - startTime;
+        return this.endTime - startTime;
     }
 }

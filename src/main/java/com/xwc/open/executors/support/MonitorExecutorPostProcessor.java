@@ -35,7 +35,9 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
     private AtomicLong runningCount = new AtomicLong();
 
     /**
-     * 构建一个自动输出的监控器
+     * 构建一个监控任务执行处理器器
+     * 当 time 大于零的时候会根据配置的时间自动输出
+     * 当 time 为小于等于零的时候将不在自动输出 交给用户主动调用获取
      *
      * @param timeUnit 自动输出的时间单位
      * @param time     自动输出的阈值
@@ -43,7 +45,7 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
 
     public MonitorExecutorPostProcessor(long time, TimeUnit timeUnit) {
         this.metrical = new ExecutorPerformanceMetrical();
-        if (timeUnit == null || time < 0) return;
+        if (timeUnit == null || time <= 0) return;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -61,6 +63,7 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
     public ExecutorPerformanceMetrical getMetrical() {
         ExecutorPerformanceMetrical outMetrical = this.metrical;
         this.metrical = new ExecutorPerformanceMetrical();
+        outMetrical.setEndTime(System.nanoTime());
         outMetrical.setConcurrentRunning(this.threadPoolExecutor.getActiveCount());
         outMetrical.setConcurrentWaiting(this.threadPoolExecutor.getQueue().size());
         return outMetrical;
