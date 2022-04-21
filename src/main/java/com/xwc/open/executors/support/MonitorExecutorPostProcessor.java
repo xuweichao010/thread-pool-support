@@ -32,9 +32,6 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
     // 被监控的线程池
     private ThreadPoolExecutor threadPoolExecutor;
 
-    private boolean isAutoOut = false;
-
-    private AtomicLong waitingCount = new AtomicLong();
     private AtomicLong runningCount = new AtomicLong();
 
     /**
@@ -47,7 +44,6 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
     public MonitorExecutorPostProcessor(long time, TimeUnit timeUnit) {
         this.metrical = new ExecutorPerformanceMetrical();
         if (timeUnit == null || time < 0) return;
-        isAutoOut = true;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -97,12 +93,12 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
 
     public String printMetric(String title, ExecutorPerformanceMetrical outMetrical) {
         StringBuilder sbBuf = new StringBuilder();
-        sbBuf.append(String.format("-----%s-----\n" +
+        sbBuf.append(String.format(">>>>>>>>>>>>\t %s(%3.2f s) \t<<<<<<<<<<<<<<\n" +
                         "Perf: %6.2f Hz | Running: %d | Waiting: %d | Finished: %d\n" +
                         "Running avg:%6.3fs | min:%4dms | max:%4dms\n" +
-                        "Waiting avg:%6.3fs | min:%4dms | max:%4dms\n" +
-                        "-----%s-----",
+                        "Waiting avg:%6.3fs | min:%4dms | max:%4dms\n",
                 title,
+                outMetrical.timeDuration() * 1.D / 1000_000_000,
                 outMetrical.calculatePerformance(),
                 outMetrical.getConcurrentRunning(),
                 outMetrical.getConcurrentWaiting(),
@@ -114,8 +110,7 @@ public class MonitorExecutorPostProcessor implements ExecutorPostProcessor, Thre
 
                 outMetrical.waitingAvg() / 1000_000_000D,
                 outMetrical.getWaiting().getMin().get() / 1000_000,
-                outMetrical.getWaiting().getMax().get() / 1000_000,
-                title.replaceAll(".", "+")
+                outMetrical.getWaiting().getMax().get() / 1000_000
         ));
         return sbBuf.toString();
     }

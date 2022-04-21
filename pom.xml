@@ -55,7 +55,6 @@
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
-                <checksumPolicy></checksumPolicy>
             </snapshots>
 
         </repository>

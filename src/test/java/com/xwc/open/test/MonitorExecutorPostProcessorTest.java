@@ -23,12 +23,11 @@ public class MonitorExecutorPostProcessorTest {
     public void init() {
         taskThreadPoolExecutorTest = new TaskThreadPoolExecutor(
                 10, 20, 30, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(100),
+                new ArrayBlockingQueue<>(100000000),
                 Executors.defaultThreadFactory(),
-                new ThreadPoolExecutor.CallerRunsPolicy()
+                new ThreadPoolExecutor.CallerRunsPolicy(), new MonitorExecutorPostProcessor(2, TimeUnit.SECONDS)
         );
-        MonitorExecutorPostProcessor monitor = new MonitorExecutorPostProcessor(2, TimeUnit.SECONDS);
-        taskThreadPoolExecutorTest.addExecutorPostProcessor(monitor);
+
     }
 
     @Test

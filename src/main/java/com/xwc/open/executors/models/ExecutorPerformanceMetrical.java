@@ -128,6 +128,13 @@ public class ExecutorPerformanceMetrical {
      */
     public double calculatePerformance() {
         if (count.get() == 0) return 0D;
-        return count.get() * 1000_000_000L * 1D / ((this.endTime = System.nanoTime()) - startTime);
+        return count.get() * 1000_000_000L * 1D / this.timeDuration();
+    }
+
+    /**
+     * 返回任务监控的时间
+     */
+    public long timeDuration() {
+        return (this.endTime = System.nanoTime()) - startTime;
     }
 }
