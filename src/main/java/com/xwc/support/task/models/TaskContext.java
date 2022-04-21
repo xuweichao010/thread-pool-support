@@ -1,4 +1,4 @@
-package com.xwc.open.executors.models;
+package com.xwc.support.task.models;
 
 import java.util.HashMap;
 import java.util.Map;

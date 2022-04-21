@@ -1,8 +1,8 @@
-package com.xwc.open.executors;
+package com.xwc.support.task;
 
 
-import com.xwc.open.executors.models.TaskContext;
-import com.xwc.open.executors.support.CommonRejectedExecutionHandlerProxy;
+import com.xwc.support.task.models.TaskContext;
+import com.xwc.support.task.support.CommonRejectedExecutionHandlerProxy;
 
 import java.util.List;
 import java.util.concurrent.*;

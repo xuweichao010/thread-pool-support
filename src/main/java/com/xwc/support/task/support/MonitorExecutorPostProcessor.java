@@ -1,10 +1,10 @@
-package com.xwc.open.executors.support;
+package com.xwc.support.task.support;
 
 
-import com.xwc.open.executors.ExecutorPostProcessor;
-import com.xwc.open.executors.ThreadPoolAware;
-import com.xwc.open.executors.models.ExecutorPerformanceMetrical;
-import com.xwc.open.executors.models.TaskContext;
+import com.xwc.support.task.ExecutorPostProcessor;
+import com.xwc.support.task.ThreadPoolAware;
+import com.xwc.support.task.models.ExecutorPerformanceMetrical;
+import com.xwc.support.task.models.TaskContext;
 
 import java.util.Timer;
 import java.util.TimerTask;

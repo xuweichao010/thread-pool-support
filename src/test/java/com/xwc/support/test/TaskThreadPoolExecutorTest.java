@@ -1,6 +1,6 @@
-package com.xwc.open.test;
+package com.xwc.support.test;
 
-import com.xwc.open.executors.TaskThreadPoolExecutor;
+import com.xwc.support.task.TaskThreadPoolExecutor;
 import org.junit.Test;
 
 import java.util.Random;

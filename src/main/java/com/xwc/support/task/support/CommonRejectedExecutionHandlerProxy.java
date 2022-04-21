@@ -1,6 +1,6 @@
-package com.xwc.open.executors.support;
+package com.xwc.support.task.support;
 
-import com.xwc.open.executors.RejectedExecutionHandlerProxy;
+import com.xwc.support.task.RejectedExecutionHandlerProxy;
 
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;

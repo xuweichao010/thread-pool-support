@@ -1,8 +1,7 @@
-package com.xwc.open.test;
+package com.xwc.support.test;
 
-import com.xwc.open.executors.TaskThreadPoolExecutor;
-import com.xwc.open.executors.models.ExecutorPerformanceMetrical;
-import com.xwc.open.executors.support.MonitorExecutorPostProcessor;
+import com.xwc.support.task.TaskThreadPoolExecutor;
+import com.xwc.support.task.support.MonitorExecutorPostProcessor;
 import org.junit.Before;
 import org.junit.Test;
 
