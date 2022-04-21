@@ -34,7 +34,7 @@
 
 - 通过手动方式添加处理器
    ```java
-       taskThreadPoolExecutorTest = new TaskThreadPoolExecutor(
+       TaskThreadPoolExecutor executor = new TaskThreadPoolExecutor(
                10, 20, 30, TimeUnit.SECONDS,
                new ArrayBlockingQueue<>(10000),
                Executors.defaultThreadFactory(),
@@ -46,13 +46,31 @@
 
 - 通过构造方法添加处理器
    ```java
-       taskThreadPoolExecutorTest = new TaskThreadPoolExecutor(
+       TaskThreadPoolExecutor executor = new TaskThreadPoolExecutor(
                 10, 20, 30, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10000),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy(), new MonitorExecutorPostProcessor(2, TimeUnit.SECONDS)
         );
    ```
+
+- 执行任务
+  ```java
+       for (int i = 0; i < 1000000; i++) {
+            int finalI = i;
+            executor.execute(() -> {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(new Random().nextInt(50) + 30);
+                    if (finalI % 10000 == 0) {
+                        System.out.println("任务执行数量 ====>>>>>> " + finalI);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            TimeUnit.MILLISECONDS.sleep(new Random().nextInt(5));
+        }
+  ```
 
 #### 获取监控信息
 
