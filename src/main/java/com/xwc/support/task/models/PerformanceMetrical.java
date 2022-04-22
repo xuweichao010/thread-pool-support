@@ -13,15 +13,15 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 public class PerformanceMetrical {
     /**
-     * 记录任务最小的时间
+     * 记录任务最小的时间 单位是纳秒
      */
     private AtomicLong min = new AtomicLong();
     /**
-     * 记录任务的最大时间
+     * 记录任务的最大时间 单位是纳秒
      */
     private AtomicLong max = new AtomicLong();
     /**
-     * 记录任务的总数量
+     * 记录任务的总数量 单位是纳秒
      */
     private AtomicLong sum = new AtomicLong();
 

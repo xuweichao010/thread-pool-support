@@ -132,7 +132,7 @@ public class ExecutorPerformanceMetrical {
     }
 
     /**
-     * 返回任务监控的时间
+     * 返回任务监控的时间 单位是纳秒
      */
     public long timeDuration() {
         return this.endTime - startTime;
